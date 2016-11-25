@@ -153,53 +153,6 @@ window.addEventListener("load", function () {
   }, false);
 
   statistic.addEventListener("change", function () {
-    /* if(this.selectedIndex == 0) return;
-     var that = this;
-     var statisticTp = this.value;
-     $.ajax({
-     type: "POST",
-     url: "http://kupislona.esy.es/pokazaniya/js/response.php",
-     data: {statistic: statisticTp},
-     success: function (content) {
-     var temp = content.split(",");
-     temp.pop();
-     var circle = temp.length / 5;
-     var statisticTable = document.createElement('table');
-     var statisticTr = document.createElement('tr');
-     var ths = [];
-     for (var c = 0; c < 5; c++) {
-     ths[c] = document.createElement('th');
-     statisticTr.appendChild(ths[c]);
-     }
-     ths[0].textContent = 'id';
-     ths[1].textContent = 'Номер ТП';
-     ths[2].textContent = 'Номер счетчика';
-     ths[3].textContent = 'Показания';
-     ths[4].textContent = 'Дата';
-     statisticTable.appendChild(statisticTr);
-     for (var i = 0, arrayEnd = 5, arrayStart = 0; i < circle; i++, arrayEnd += 5, arrayStart += 5) {
-     var tempArray = temp.slice(arrayStart, arrayEnd);
-     console.log(tempArray);
-     var tr = document.createElement('tr');
-     for (var j = 0; j < tempArray.length; j++) {
-     var td = document.createElement('td');
-     td.textContent = tempArray[j];
-     tr.appendChild(td);
-     }
-
-
-     statisticTable.appendChild(tr);
-     }
-
-     body.insertBefore(statisticTable, form);
-     body.insertBefore(document.createElement('p'), form);
-     body.insertBefore(document.createElement('p'), statisticTable);
-     that.options[0].selected = true;
-     },
-     error: function (error) {
-     alert(error);
-     }
-     }); */
     showStatistic(this, "statistic");
   }, false);
 
