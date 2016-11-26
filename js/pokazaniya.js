@@ -48,7 +48,9 @@ window.addEventListener("load", function () {
   }).live("touchend", function () {
     $(this).css({background: ''});
   }).live("mouseover", function(){
-    $(this).css({cursor: 'pointer'});
+    $(this).css({cursor: 'pointer', outline: '3px solid red'});
+  }).live('mouseout', function(){
+    $(this).css({outline: 'none'});
   });
 
   lastTd.live("click", function () {
