@@ -21,6 +21,10 @@ window.addEventListener("load", function () {
     $(this).css({backgroundColor: 'violet'});
   }).live('touchend', function () {
     $(this).css({background: ''});
+  }).live('mouseover', function(){
+    $(this).css({cursor: 'pointer', outline: '3px solid violet'});
+  }).live('mouseout', function(){
+    $(this).css({outline: 'none'});
   });
 
   valuesTd.live("click", function () {
