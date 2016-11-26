@@ -42,15 +42,19 @@
             background: url("res/loader.gif") no-repeat;
         }
 
-					 p#date{
-							font-size: 1.5em;
-							padding: 15px;
-							border: 1px solid #3c763d;
-							border-radius: 4px;
-							color: #3c763d;
-							background-color: #dff0d8;
-							 text-shadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2), 0 20px 20px rgba(0,0,0,.15);
-					 }
+        p#date {
+            font-size: 1.5em;
+            padding: 15px;
+            border: 1px solid #3c763d;
+            border-radius: 4px;
+            color: #3c763d;
+            background-color: #dff0d8;
+            text-shadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0, 0, 0, .1), 0 0 5px rgba(0, 0, 0, .1), 0 1px 3px rgba(0, 0, 0, .3), 0 3px 5px rgba(0, 0, 0, .2), 0 5px 10px rgba(0, 0, 0, .25), 0 10px 10px rgba(0, 0, 0, .2), 0 20px 20px rgba(0, 0, 0, .15);
+        }
+
+        select{
+            font-size: 1.5em;
+        }
 
     </style>
     <meta charset="utf-8"/>
@@ -65,8 +69,10 @@ $query = "select * from pokazaniya";
 $result = $db->query($query);
 $num_results = $result->num_rows;
 
-echo "<p id = date>Сегодня " . date("d.m.y")."</p>";?>
-<center><script src="http://www.epwr.ru/aphorism/data21utf8.js"></script><font size=1><!--<a href="http://www.epwr.ru">Афоризмы</a>--></font></center>
+echo "<p id = date>Сегодня " . date("d.m.y") . "</p>"; ?>
+<center>
+    <script src="http://www.epwr.ru/aphorism/data21utf8.js"></script>
+    <font size=1><!--<a href="http://www.epwr.ru">Афоризмы</a>--></font></center>
 <p></p>
 <?
 echo "<table id = 'table'>";
@@ -135,7 +141,28 @@ echo "</table>";
     </select>
 </form>
 <p></p>
-<a><img src="http://www.meteonova.ru/informer/PNG102_36403_1C1C1C_1C1C1C_E8E8E8_B5B5B5_FFFFFF_1C1C1C_4F4F4F.PNG" border="0" title="Погода от Метеоновы по г. Усть-Каменогорск" alt="Погода от Метеоновы по г. Усть-Каменогорск"></a>
-<link rel="stylesheet" type="text/css" href="https://bst1.gismeteo.ru/assets/flat-ui/legacy/css/informer.min.css"> <div id="gsInformerID-yoCHRFM6D135gY" class="gsInformer" style="width:134px;height:150px"> <div class="gsIContent"> <div id="cityLink"> <a>Погода в Усть-Каменогорске</a> </div> <div class="gsLinks"> <table> <tr> <td> <div class="leftCol"> <a> <img alt="Gismeteo" title="Gismeteo" src="https://bst1.gismeteo.ru/assets/flat-ui/img/logo-mini2.png" align="middle" border="0" /> <span>Gismeteo</span> </a> </div> <div class="rightCol"></div> </td> </tr> </table> </div> </div> </div> <script async src="https://www.gismeteo.ru/api/informer/getinformer/?hash=yoCHRFM6D135gY" type="text/javascript"></script> <!-- Gismeteo informer END -->
+<a><img src="http://www.meteonova.ru/informer/PNG102_36403_1C1C1C_1C1C1C_E8E8E8_B5B5B5_FFFFFF_1C1C1C_4F4F4F.PNG"
+        border="0" title="Погода от Метеоновы по г. Усть-Каменогорск" alt="Погода от Метеоновы по г. Усть-Каменогорск"></a>
+<link rel="stylesheet" type="text/css" href="https://bst1.gismeteo.ru/assets/flat-ui/legacy/css/informer.min.css">
+<div id="gsInformerID-yoCHRFM6D135gY" class="gsInformer" style="width:134px;height:150px">
+    <div class="gsIContent">
+        <div id="cityLink"><a>Погода в Усть-Каменогорске</a></div>
+        <div class="gsLinks">
+            <table>
+                <tr>
+                    <td>
+                        <div class="leftCol"><a> <img alt="Gismeteo" title="Gismeteo"
+                                                      src="https://bst1.gismeteo.ru/assets/flat-ui/img/logo-mini2.png"
+                                                      align="middle" border="0"/> <span>Gismeteo</span> </a></div>
+                        <div class="rightCol"></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script async src="https://www.gismeteo.ru/api/informer/getinformer/?hash=yoCHRFM6D135gY"
+        type="text/javascript"></script>
+<!-- Gismeteo informer END -->
 </body>
 </html>
