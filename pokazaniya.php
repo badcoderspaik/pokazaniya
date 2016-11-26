@@ -72,7 +72,7 @@ $num_results = $result->num_rows;
 echo "<p id = date>Сегодня " . date("d.m.y") . "</p>"; ?>
 <center>
     <script src="http://www.epwr.ru/aphorism/data21utf8.js"></script>
-    <font size=1><!--<a href="http://www.epwr.ru">Афоризмы</a>--></font></center>
+    <font size=1></font></center>
 <p></p>
 <?
 echo "<table id = 'table'>";
