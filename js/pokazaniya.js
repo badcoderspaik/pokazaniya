@@ -11,6 +11,12 @@ window.addEventListener("load", function () {
   crossRemoveButton = document.createElement("p");
   crossRemoveButton.className = "crossRemoveButton";
 
+  $.ajaxSetup({
+    type: "POST",
+    dataType: "text",
+    url: "http://kupislona.esy.es/pokazaniya/js/response.php"
+  });
+
   lastTd.live('touchstart', function () {
     $(this).css({backgroundColor: 'violet'});
   }).live('touchend', function () {
@@ -25,9 +31,6 @@ window.addEventListener("load", function () {
     that.html("<div class = loader></div>");
 
     $.ajax({
-      type: "POST",
-      dataType: "text",
-      url: "http://kupislona.esy.es/pokazaniya/js/response.php",
       data: {insertValue: insertValue, firstId: id},
       success: function (content) {
         if (content) {
@@ -44,6 +47,8 @@ window.addEventListener("load", function () {
     $(this).css({backgroundColor: 'red'});
   }).live("touchend", function () {
     $(this).css({background: ''});
+  }).live("mouseover", function(){
+    $(this).css({cursor: 'pointer'});
   });
 
   lastTd.live("click", function () {
@@ -52,9 +57,6 @@ window.addEventListener("load", function () {
     var really = confirm("Действительно удалить строку с id = " + id + "?");
     if (really) {
       $.ajax({
-        type: "POST",
-        dataType: "text",
-        url: "http://kupislona.esy.es/pokazaniya/js/response.php",
         data: {id: id},
         success: function (content) {
           parent.parentNode.removeChild(parent);
@@ -103,8 +105,6 @@ window.addEventListener("load", function () {
     var that = those,
         statisticTp = those.value;
     $.ajax({
-      type: "POST",
-      url: "http://kupislona.esy.es/pokazaniya/js/response.php",
       data: postValue+"="+statisticTp,
       success: function (content) {
         var temp = content.split(",");
@@ -158,9 +158,6 @@ window.addEventListener("load", function () {
 
   function send(arrayTr) {
     $.ajax({
-      type: "POST",
-      dataType: "text",
-      url: "http://kupislona.esy.es/pokazaniya/js/response.php",
       data: {selected: $("#select").val(), count: arrayTr[1]},
       success: function (content) {
         var temp = content.split(",");
