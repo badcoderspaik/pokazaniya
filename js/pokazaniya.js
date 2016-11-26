@@ -182,8 +182,6 @@ window.addEventListener("load", function () {
     for (var i = 0; i < 6; i++) {
       td[i] = document.createElement("td");
       td[i].textContent = arrayTr[i];
-      //if(i == 5) td[i].appendChild(crossRemoveButton);
-      //td2.addEventListener("click", changeTp, false);
       tr.appendChild(td[i]);
     }
     table.appendChild(tr);
