@@ -42,7 +42,7 @@ if (!empty($insertValue)) {
 }
 
 if(!empty($statistic)){
-    $query = "select * from `pokazaniya` WHERE `tp_number` = \"$statistic\"";
+    $query = "select * from `pokazaniya` WHERE `tp_number` = \"$statistic\" ORDER BY id ASC";
     $result = $db->query($query);
 				 $num_results = $result->num_rows;
     for ($i = 0; $i < $num_results; $i++) {
@@ -53,7 +53,7 @@ if(!empty($statistic)){
 }
 
 if(!empty($statistic_count)){
-    $query = "select * from `pokazaniya` WHERE `count_number` = \"$statistic_count\"";
+    $query = "select * from `pokazaniya` WHERE `count_number` = \"$statistic_count\" ORDER BY id ASC";
     $result = $db->query($query);
 				 $num_results = $result->num_rows;
     for ($i = 0; $i < $num_results; $i++) {
