@@ -2,7 +2,14 @@
 <html>
 <head>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script
+        src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+        crossorigin="anonymous">
+    </script>
     <script src="js/pokazaniya.js"></script>
+    <link rel="stylesheet" href="css/jquery-ui.min.css">
+
     <style>
         body {
             font-size: 0.8em;
@@ -42,6 +49,12 @@
             background: url("res/loader.gif") no-repeat;
         }
 
+        .loader2 {
+            background: url("res/77.gif") no-repeat;
+            width: 256px;
+            height: 38px;
+        }
+
         p#date {
             font-size: 1.5em;
             padding: 15px;
@@ -51,7 +64,7 @@
             background-color: #dff0d8;
         }
 
-        select{
+        select {
             font-size: 1.5em;
         }
 
@@ -136,29 +149,12 @@ echo "</table>";
         <option>20309187</option>
     </select>
 </form>
-<p></p>
-<a><img src="http://www.meteonova.ru/informer/PNG102_36403_1C1C1C_1C1C1C_E8E8E8_B5B5B5_FFFFFF_1C1C1C_4F4F4F.PNG"
-        border="0" title="Погода от Метеоновы по г. Усть-Каменогорск" alt="Погода от Метеоновы по г. Усть-Каменогорск"></a>
-<link rel="stylesheet" type="text/css" href="https://bst1.gismeteo.ru/assets/flat-ui/legacy/css/informer.min.css">
-<div id="gsInformerID-yoCHRFM6D135gY" class="gsInformer" style="width:134px;height:150px">
-    <div class="gsIContent">
-        <div id="cityLink"><a>Погода в Усть-Каменогорске</a></div>
-        <div class="gsLinks">
-            <table>
-                <tr>
-                    <td>
-                        <div class="leftCol"><a> <img alt="Gismeteo" title="Gismeteo"
-                                                      src="https://bst1.gismeteo.ru/assets/flat-ui/img/logo-mini2.png"
-                                                      align="middle" border="0"/> <span>Gismeteo</span> </a></div>
-                        <div class="rightCol"></div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
+
+<div id="dialog">
+    <p>
+        Слабое сетевое соединение Попытка не пытка, дружок!
+    </p>
 </div>
-<script async src="https://www.gismeteo.ru/api/informer/getinformer/?hash=yoCHRFM6D135gY"
-        type="text/javascript"></script>
-<!-- Gismeteo informer END -->
+
 </body>
 </html>
