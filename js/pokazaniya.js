@@ -1,8 +1,9 @@
 window.addEventListener("load", function () {
   var table = document.getElementById("table"), // таблица
-    $table = $('#table'),
+    $table = $('#table'), // таблица
     select = document.getElementById("select"),// список выбора "Добавить ТП"
     statistic = document.getElementById("statistic"),// список выбора "Статистика по номеру ТП"
+    set_values = document.getElementById('set_values'); // список выбора "Просчитать и внести показания"
     lastTd = $("td:nth-child(6)"),// 6-ой столбец таблицы - кнопка удаления
     valuesTd = $("td:nth-child(4)"),// 4-ый столбец "показания"
     statistic_count = document.getElementById("statistic_count"),// список выбора "Статистика по номеру счетчика"
@@ -307,6 +308,70 @@ window.addEventListener("load", function () {
       }
     });
   }
+
+  function setStatisticValues(count_value){
+    $.ajax({
+      data:{set_value: $('#set_values').val(), count_value: count_value[1], set_v: count_value[0]},
+      sucess: function(content){
+        console.log(content);
+      }
+    });
+  }
+
+  set_values.addEventListener('change', function(){
+     var checked = this.selectedIndex;
+    switch (checked){
+
+      case 1:
+        setStatisticValues([309, 100964]);
+        break;
+
+      case 2:
+        setStatisticValues([309, 160000]);
+        break;
+
+      case 3:
+        setStatisticValues([310, 215110]);
+        break;
+
+      case 4:
+        setStatisticValues([310, 995258]);
+        break;
+
+      case 5:
+        setStatisticValues([310, '019250']);
+        break;
+
+      case 6:
+        setStatisticValues([310, 114489]);
+        break;
+
+      case 7:
+        setStatisticValues([311, 215933]);
+        break;
+
+      case 8:
+        setStatisticValues([311, 516465]);
+        break;
+
+      case 9:
+        setStatisticValues([312, 820943]);
+        break;
+
+      case 10:
+        setStatisticValues([312, 835057]);
+        break;
+
+      case 11:
+        setStatisticValues([313, 20297549]);
+        break;
+
+      case 12:
+        setStatisticValues([314, 20309187]);
+        break;
+    }
+    this.options[0].selected = true;
+  }, false);
 
   /**
    * функция построения строки таблицы

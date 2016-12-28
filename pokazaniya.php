@@ -148,6 +148,24 @@ echo "</table>";
         <option>20297549</option>
         <option>20309187</option>
     </select>
+
+    <p></p>
+
+    <select id="set_values">
+        <option>Просчитать и внести показания</option>
+        <option>100964</option>
+        <option>160000</option>
+        <option>215110</option>
+        <option>995258</option>
+        <option>019250</option>
+        <option>114489</option>
+        <option>215933</option>
+        <option>516465</option>
+        <option>820943</option>
+        <option>835057</option>
+        <option>20297549</option>
+        <option>20309187</option>
+    </select>
 </form>
 
 <div id="dialog">
