@@ -312,8 +312,10 @@ window.addEventListener("load", function () {
   function setStatisticValues(count_value){
     $.ajax({
       data:{set_value: $('#set_values').val(), count_value: count_value[1], set_v: count_value[0]},
-      sucess: function(content){
-        console.log(content);
+      success: function(content){
+		var temp = content.split(",");// парсинг строки, полученной из БД из ответа сервера и содержащей id, номер ТП и т.д., в массив
+        addTr(temp);// построение из этого массива строки таблицы и добавление ее в таблицу
+        $("td:nth-child(6)").html("<div class=crossRemoveButton></div>");
       }
     });
   }

@@ -48,12 +48,22 @@ if (!empty($set_value) && !empty($count_value)) {
         return round(end($inArray) + $average);
     }
 
-    echo average($temp_array);
-    echo "\n";
-    echo "$set_v : $count_value";
+    //echo average($temp_array);
+    //echo "\n";
+    //echo "$set_v : $count_value";
     $value = average($temp_array);
-    echo "\n";
-    echo "$set_v";
+    
+	   $query = "INSERT INTO `pokazaniya` (`tp_number`, `count_number`, `pok`, `date`) VALUES (\"$set_v\",\"$count_value\",\"$value\",\"$currentDate\")";
+	   $db->query($query);
+	
+	   $query = "select * from pokazaniya order by id desc limit 1";
+    $result = $db->query($query);
+    $num_results = $result->num_rows;
+    for ($i = 0; $i < $num_results; $i++) {
+        $row = $result->fetch_object();
+        echo "$row->id,$row->tp_number,$row->count_number,$row->pok,$row->date,";
+
+    }
 }
 
 if (!empty($selected) && !empty($count)) {
