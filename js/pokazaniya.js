@@ -3,8 +3,8 @@ window.addEventListener("load", function () {
     $table = $('#table'), // таблица
     select = document.getElementById("select"),// список выбора "Добавить ТП"
     statistic = document.getElementById("statistic"),// список выбора "Статистика по номеру ТП"
-    set_values = document.getElementById('set_values'); // список выбора "Просчитать и внести показания"
-  lastTd = $("td:nth-child(6)"),// 6-ой столбец таблицы - кнопка удаления
+    set_values = document.getElementById('set_values'), // список выбора "Просчитать и внести показания"
+    lastTd = $("td:nth-child(6)"),// 6-ой столбец таблицы - кнопка удаления
     valuesTd = $("td:nth-child(4)"),// 4-ый столбец "показания"
     statistic_count = document.getElementById("statistic_count"),// список выбора "Статистика по номеру счетчика"
     body = document.body,// тело оно и в Африке тело

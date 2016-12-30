@@ -1,23 +1,17 @@
 <?php
-$selected = $_POST["selected"];
-$count = $_POST["count"];
-$id = $_POST["id"];
-$insertValue = $_POST["insertValue"];
-$firstId = $_POST["firstId"];
-$currentDate = date("d.m.y");
-$statistic = $_POST["statistic"];
-$statistic_count = $_POST["statisticCount"];
-$set_value = $_POST["set_value"];
-$count_value = $_POST["count_value"];
-$set_v = $_POST['set_v'];
+$selected = $_POST["selected"]; // значение выбранного пункта списка - 309, 310, 311 и т.д. - номера ТП
+$count = $_POST["count"];// номер счетчика
+$id = $_POST["id"]; // уникальный номер из первой ячейки
+$insertValue = $_POST["insertValue"];// значение, введенное в prompt-окно - показания для записи в БД в поле 'pok'
+$firstId = $_POST["firstId"];// уникальный id записи; служит для идентификации записи, в которую будет вставлено значение из $_POST["insertValue"]
+$currentDate = date("d.m.y");// динамическая дата в формате дд.мм.гг
+$statistic = $_POST["statistic"];// номер ТП из списка "Статистика по номеру ТП"
+$statistic_count = $_POST["statisticCount"];// номер ТП из списка "Статистика по номеру счетчика"
+$set_value = $_POST["set_value"];// номер счетчика из списка "Просчитать и ввести показания"
+$count_value = $_POST["count_value"];// номер счетчика
+$set_v = $_POST['set_v'];// номер ТП из списка "Просчитать и ввести показания"
 
 require_once("/home/u996357382/public_html/pokazaniya/connection.php");
-/*$db = new mysqli("localhost", "u996357382_learn", "spaik87055091802", "u996357382_learn");
-if (mysqli_connect_errno()) {
-    echo "connection error";
-} else {
-
-}*/
 
 if (!empty($set_value) && !empty($count_value)) {
 
