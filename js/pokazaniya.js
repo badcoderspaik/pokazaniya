@@ -8,7 +8,6 @@ window.addEventListener("load", function () {
     valuesTd = $("td:nth-child(4)"),// 4-ый столбец "показания"
     statistic_count = document.getElementById("statistic_count"),// список выбора "Статистика по номеру счетчика"
     body = document.body,// тело оно и в Африке тело
-    dataLoading = document.createElement('div'),
     form = document.getElementById("form"),
     $form = $('#form'),
     $dialog = $('#dialog');
@@ -64,6 +63,8 @@ window.addEventListener("load", function () {
       that = $(this), // псевдоним this
       insertValue = prompt("Ввести показания", that.text()); // окно ввода показаний с ранее введенным значением по умолчанию
     if (insertValue == null || insertValue == "") return; // если нажать кнопку "отмена" или ввести пустое значение - произойдет выход из функции
+    var scrollTop = that.offset().top;// анимация появления таблицы
+    $('html, body').animate({scrollTop: scrollTop}, 1000, 'swing');// прокрутка таблицы в начало документа
     that.html("<div class = loader></div>"); // иначе в ячейку будет вставлен div с фоном картинки-загрузчика
 
     // и аяксом отправятся следующие данные на сервер в файл response.php:
@@ -183,7 +184,6 @@ window.addEventListener("load", function () {
     if (those.selectedIndex == 0) return;// если выбран 1ый элемент списка - возврат из функции
     var that = those,// объект списка
       statisticTp = those.value;// значение выбранного элемента списка
-    dataLoading.className = 'loader2';
     $("<div class=loader2></div>").insertBefore($form);
     $.ajax({
       /**
@@ -254,7 +254,6 @@ window.addEventListener("load", function () {
           statisticTable.appendChild(tr);// вставка строки в таблицу
         }
 
-        //dataLoading.parentNode.removeChild(dataLoading);
         $("div.loader2").remove();
         body.insertBefore(statisticTable, form);// вставка таблицы статистики в тело документа перед списками выбора
         var lastTable = $('.statTable').last();// последняя добавленная таблица вывода статистики
