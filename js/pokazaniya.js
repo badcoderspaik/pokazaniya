@@ -4,14 +4,15 @@ window.addEventListener("load", function () {
     select = document.getElementById("select"),// список выбора "Добавить ТП"
     statistic = document.getElementById("statistic"),// список выбора "Статистика по номеру ТП"
     set_values = document.getElementById('set_values'); // список выбора "Просчитать и внести показания"
-    lastTd = $("td:nth-child(6)"),// 6-ой столбец таблицы - кнопка удаления
+  lastTd = $("td:nth-child(6)"),// 6-ой столбец таблицы - кнопка удаления
     valuesTd = $("td:nth-child(4)"),// 4-ый столбец "показания"
     statistic_count = document.getElementById("statistic_count"),// список выбора "Статистика по номеру счетчика"
     body = document.body,// тело оно и в Африке тело
-    form = document.getElementById("form"),
-    $form = $('#form'),
-    $dialog = $('#dialog');
+    form = document.getElementById("form"),// форма со списками
+    $form = $('#form'),// форма со списками
+    $dialog = $('#dialog');// диалоговое окно - выводится при неудачном ajax-запросе в функции error. Это стандартный компонент jQuery UI - dialog
 
+  // диалоговое окно
   $dialog.dialog({
     title: 'Ошибка',
     autoOpen: false,
@@ -76,7 +77,7 @@ window.addEventListener("load", function () {
         }
       },
       error: function (xhr, str, errorType) {// при неуспешном запросе
-        $dialog.dialog('open');//alert(str);// выводится alert с типом ошибки
+        $dialog.dialog('open');// выводится диалоговое окно
       }
     });
   });
@@ -125,7 +126,7 @@ window.addEventListener("load", function () {
            });*/
         },
         error: function (xhr, str, errorType) {// при ошибке
-          $dialog.dialog('open');//alert(errorType);// алерт с типом ошибки
+          $dialog.dialog('open');//вывод диалогового окна
         }
       });
     }
@@ -254,7 +255,7 @@ window.addEventListener("load", function () {
           statisticTable.appendChild(tr);// вставка строки в таблицу
         }
 
-        $("div.loader2").remove();
+        $("div.loader2").remove();// удаление картинки-загрузчика
         body.insertBefore(statisticTable, form);// вставка таблицы статистики в тело документа перед списками выбора
         var lastTable = $('.statTable').last();// последняя добавленная таблица вывода статистики
         lastTable.css({display: 'none'});// скрытие таблицы статистики для последующей анимации появления
@@ -308,20 +309,28 @@ window.addEventListener("load", function () {
     });
   }
 
-  function setStatisticValues(count_value){
+  /**
+   * отправляет в response.php POST['set_value'] - номер счетчика, POST['count_value'] - номер счетчика, POST['set_v'] - номер ТП
+   * и формирует строку таблицы из ответа
+   * @param count_value
+   */
+  function setStatisticValues(count_value) {
     $.ajax({
-      data:{set_value: $('#set_values').val(), count_value: count_value[1], set_v: count_value[0]},
-      success: function(content){
-		var temp = content.split(",");// парсинг строки, полученной из БД из ответа сервера и содержащей id, номер ТП и т.д., в массив
+      data: {set_value: $('#set_values').val(), count_value: count_value[1], set_v: count_value[0]},
+      success: function (content) {
+        var temp = content.split(",");// парсинг строки, полученной из БД из ответа сервера и содержащей id, номер ТП и т.д., в массив
         addTr(temp);// построение из этого массива строки таблицы и добавление ее в таблицу
-        $("td:nth-child(6)").html("<div class=crossRemoveButton></div>");
+        $("td:nth-child(6)").html("<div class=crossRemoveButton></div>");// вставка кнопки удаления в последнюю ячейку
       }
     });
   }
 
-  set_values.addEventListener('change', function(){
-     var checked = this.selectedIndex;
-    switch (checked){
+  /**
+   * выбор в списке "Просчитать и внести показания"
+   */
+  set_values.addEventListener('change', function () {
+    var checked = this.selectedIndex;
+    switch (checked) {
 
       case 1:
         setStatisticValues([309, 100964]);
@@ -371,7 +380,7 @@ window.addEventListener("load", function () {
         setStatisticValues([314, 20309187]);
         break;
     }
-    this.options[0].selected = true;
+    this.options[0].selected = true;// программная уствновка 1ого пункта списка в активное состояние
   }, false);
 
   /**
@@ -389,11 +398,11 @@ window.addEventListener("load", function () {
       tr.appendChild(td[i]);// вставка ячейки в строку
     }
     table.appendChild(tr);// добавление строки в таблицу
-    tr.style.display = 'none';
-    var $last_tr = $(tr).last();
-    $last_tr.fadeIn(1000);
-    var scrollTop = $last_tr.offset().top;// анимация появления таблицы
-    $('html, body').animate({scrollTop: scrollTop}, 1000, 'swing');
+    tr.style.display = 'none';// скрытие строки для последующего эффекта анимации
+    var $last_tr = $(tr).last();// только-что добавленная строка
+    $last_tr.fadeIn(1000);// анимация появления строки
+    var scrollTop = $last_tr.offset().top;// координаты только-что добавленной строки
+    $('html, body').animate({scrollTop: scrollTop}, 1000, 'swing');// скроллинг до строки
   }
 
 }, false);
