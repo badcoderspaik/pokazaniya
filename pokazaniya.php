@@ -9,13 +9,14 @@
     </script>
     <script src="js/pokazaniya.js"></script>
     <link rel="stylesheet" href="css/jquery-ui.min.css">
-
+    
     <style>
         body {
             font-size: 0.8em;
             font-weight: bold;
             background-image: url("res/skin.png");
             background-attachment: fixed;
+            position: relative;
         }
 
         table {

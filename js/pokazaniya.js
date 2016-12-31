@@ -10,7 +10,8 @@ window.addEventListener("load", function () {
     body = document.body,// тело оно и в Африке тело
     form = document.getElementById("form"),// форма со списками
     $form = $('#form'),// форма со списками
-    $dialog = $('#dialog');// диалоговое окно - выводится при неудачном ajax-запросе в функции error. Это стандартный компонент jQuery UI - dialog
+    $page_loader = $("<div id = 'page_loader'></div>");
+  $dialog = $('#dialog');// диалоговое окно - выводится при неудачном ajax-запросе в функции error. Это стандартный компонент jQuery UI - dialog
 
   // диалоговое окно
   $dialog.dialog({
@@ -404,5 +405,20 @@ window.addEventListener("load", function () {
     var scrollTop = $last_tr.offset().top;// координаты только-что добавленной строки
     $('html, body').animate({scrollTop: scrollTop}, 1000, 'swing');// скроллинг до строки
   }
+
+  $('body').bind('ajaxStart', function () {
+    $page_loader.css({
+      width: '100px',
+      height: '100px',
+      position: 'fixed',
+      backgroundImage: "url('http://kupislona.esy.es/pokazaniya/res/pageLoader.gif')",
+      left: ($(window).width() / 2 - 50) + 'px',
+      top: ($(window).height() / 2 - 50) + 'px'
+    }).appendTo($('body'));
+  });
+
+  $('body').bind('ajaxStop', function () {
+    $page_loader.remove();
+  });
 
 }, false);
