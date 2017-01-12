@@ -7,9 +7,14 @@
         integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
         crossorigin="anonymous">
     </script>
+    <script src="/pokazaniya/js/init.js"></script>
     <script src="js/pokazaniya.js"></script>
+    <script src="/pokazaniya/js/ajaxSetup.js"></script>
+    <script src="/pokazaniya/js/dialog.js"></script>
+    <script src="/pokazaniya/js/statisticTable.js"></script>
+    <script src="/pokazaniya/js/addingTr.js"></script>
     <link rel="stylesheet" href="css/jquery-ui.min.css">
-    
+
     <style>
         body {
             font-size: 0.8em;
@@ -17,6 +22,7 @@
             background-image: url("res/skin.png");
             background-attachment: fixed;
             position: relative;
+            margin-bottom: 200px;
         }
 
         table {
@@ -51,9 +57,9 @@
         }
 
         .loader2 {
-            background: url("res/77.gif") no-repeat;
-            width: 256px;
-            height: 38px;
+            background: url("res/47.gif") no-repeat;
+            width: 200px;
+            height: 30px;
         }
 
         p#date {
@@ -67,6 +73,32 @@
 
         select {
             font-size: 1.5em;
+        }
+
+        form {
+            position: fixed;
+            bottom: 0;
+        }
+
+        #menu-button {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 50px;
+            height: 50px;
+            background-color: white;
+            opacity: 0.2;
+            cursor: pointer;
+            padding: 10px;
+            border: 1px solid black;
+            border-radius: 5px;
+            z-index: 100;
+        }
+
+        .m-button {
+            background-color: black;
+            height: 10px;
+            margin-bottom: 10px;
         }
 
     </style>
@@ -83,6 +115,11 @@ $result = $db->query($query);
 $num_results = $result->num_rows;
 
 echo "<p id = date>Сегодня " . date("d.m.y") . "</p>"; ?>
+<div id="menu-button">
+    <div class="m-button"></div>
+    <div class="m-button"></div>
+    <div class="m-button"></div>
+</div>
 <p></p>
 <?
 echo "<table id = 'table'>";
@@ -109,7 +146,8 @@ echo "</table>";
 ?>
 <br>
 
-<form id="form">
+<form id="accordion">
+
     <select id="select" name="selected">
         <option>Добавить ТП</option>
         <option>309</option>

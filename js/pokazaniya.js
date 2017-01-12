@@ -1,39 +1,36 @@
-window.addEventListener("load", function () {
+
+$(function () {
   var table = document.getElementById("table"), // таблица
-    $table = $('#table'), // таблица
     select = document.getElementById("select"),// список выбора "Добавить ТП"
     statistic = document.getElementById("statistic"),// список выбора "Статистика по номеру ТП"
     set_values = document.getElementById('set_values'), // список выбора "Просчитать и внести показания"
-    lastTd = $("td:nth-child(6)"),// 6-ой столбец таблицы - кнопка удаления
     valuesTd = $("td:nth-child(4)"),// 4-ый столбец "показания"
     statistic_count = document.getElementById("statistic_count"),// список выбора "Статистика по номеру счетчика"
-    body = document.body,// тело оно и в Африке тело
-    form = document.getElementById("form"),// форма со списками
-    $form = $('#form'),// форма со списками
-    $page_loader = $("<div id = 'page_loader'></div>");
+    $menu_button = $('#menu-button');// меню в правом верхнем углу, отвечающее за показ-скрытие формы со списками
   $dialog = $('#dialog');// диалоговое окно - выводится при неудачном ajax-запросе в функции error. Это стандартный компонент jQuery UI - dialog
+  $page_loader = $("<div id = 'page_loader'></div>");
+  $table = $('#table');// таблица;
+  lastTd = $("td:nth-child(6)");// 6-ой столбец таблицы - кнопка удаления
+  body = document.body;// тело оно и в Африке тело
+  loader = $("<div class=loader2></div>");// полоса-загрузчик в функции showStatistic
+  $form = $('#accordion');// форма со списками
+  form = document.getElementById("accordion");// форма со списками
 
-  // диалоговое окно
-  $dialog.dialog({
-    title: 'Ошибка',
-    autoOpen: false,
-    modal: true,
-    show: 'puff',
-    hide: 'puff',
-    buttons: {
-      'Лады': function () {
-        $(this).dialog('close');
-      }
+  dialog();
+  ajaxSetup();
+
+  $menu_button.bind({
+    click: function () {
+      $form.toggle();
+    },
+
+    touchstart: function () {
+      $(this).css({opacity: 1});
+    },
+
+    touchend: function () {
+      $(this).css({opacity: 0.2});
     }
-  });
-
-  /**
-   * установки по умолчанию для ajax-запросов
-   */
-  $.ajaxSetup({
-    type: "POST",
-    dataType: "text",
-    url: "http://kupislona.esy.es/pokazaniya/js/response.php"
   });
 
   /*
@@ -43,11 +40,11 @@ window.addEventListener("load", function () {
     $(this).css({backgroundColor: 'violet'});// фиолетовый фон
   }).live('touchend', function () { // для сенсорного экрана при поднятии пальца
     $(this).css({background: ''}); // изначальный фон
-  }).live('mouseover', function () { // для ПК - мышь над элементом
-    $(this).css({cursor: 'pointer', outline: '3px solid violet'}); // рамка фиолетового цвета в 3px + cursor pointer
-  }).live('mouseout', function () { // при mouseoute
-    $(this).css({outline: 'none'});// изначальные стили
-  });
+  });//.live('mouseover', function () { // для ПК - мышь над элементом
+//    $(this).css({cursor: 'pointer', outline: '3px solid violet'}); // рамка фиолетового цвета в 3px + cursor pointer
+//  }).live('mouseout', function () { // при mouseoute
+//    $(this).css({outline: 'none'});// изначальные стили
+//  });
 
   /**
    * клик на столбце (ячейке) "показания"
@@ -90,11 +87,11 @@ window.addEventListener("load", function () {
     $(this).css({backgroundColor: 'red'});// красный фон
   }).live("touchend", function () {// палец поднят
     $(this).css({background: ''});// изначальный фон
-  }).live("mouseover", function () { // мышь над ячейкой
-    $(this).css({cursor: 'pointer', outline: '3px solid red'});// красная рамка в 3px + cursor pointer
-  }).live('mouseout', function () {
-    $(this).css({outline: 'none'});// none
-  });
+  });//.live("mouseover", function () { // мышь над ячейкой
+//    $(this).css({cursor: 'pointer', outline: '3px solid red'});// красная рамка в 3px + cursor pointer
+//  }).live('mouseout', function () {
+//    $(this).css({outline: 'none'});// none
+//  });
 
   /**
    * клик на кнопке удаления(последняя ячейка)
@@ -117,7 +114,6 @@ window.addEventListener("load", function () {
         data: {id: id},// передача POST["id"] - это уникальный номер из первой ячейки
         success: function (content) { // при удачном ответе
           //parent.parentNode.removeChild(parent);// происходит удаление строки с переданным id
-
           $parent.effect('explode', {mode: 'hide'}, 600, function () {
             parent.parentNode.removeChild(parent);// происходит удаление строки с переданным id
           });
@@ -169,112 +165,7 @@ window.addEventListener("load", function () {
   }, false);
 
 
-  /**
-   * Срабатывает при выборе пункта из списков
-   * "статистика по номеру ТП " и "статистика по номеру счетчика"
-   * в функции-обработчике одного из объектов данного списка
-   * @function showStatistic
-   * @param {HTMLSelectElement} those - Объект списка.
-   * При вызове передается как this - statistic или statistic_count
-   * @param {string} postValue - Строка. Передается как "statistic" или "statisticCount";
-   * в функции аяксом отправляется на сервер
-   * как параметр post-запроса
-   * и на сервере в файле response.php
-   * обрабатывается как POST["statistic"] или POST["statisticCount"]
-   */
-  function showStatistic(those, postValue) {
-    if (those.selectedIndex == 0) return;// если выбран 1ый элемент списка - возврат из функции
-    var that = those,// объект списка
-      statisticTp = those.value;// значение выбранного элемента списка
-    $("<div class=loader2></div>").insertBefore($form);
-    $.ajax({
-      /**
-       *значение выбранного элемента списка post-запросом
-       передается на сервер в response.php.
-       Если функция вызывается списком "statictic" - то передается номер ТП.
-       Если функция вызывается списком "statistic_count" - то номер счетчика
-       */
-      data: postValue + "=" + statisticTp,
-      /**
-       *в ответ сервер возвращает строку вида "1, 309(здесь номер ТП(как в данном случае) или номер счетчика), 160000, 5654, 12.06.16, "
-       любой длины в параметре content
-       */
-      success: function (content) {
-        /**
-         * парсинг строки,где разделителем служит запятая, в массив;
-         * причем последний элемент этого массива пуст
-         */
-        var temp = content.split(",");
-        temp.pop();// поэтому он удаляется
-        /**
-         * массив temp может состоять из любого количества элементов,
-         * но кратного числу 5 - это число ячеек в одной строке.
-         * Переменная circle - это количество строк в создаваемой ниже таблице вывода статистики,
-         * причем количество создаваемых каждый раз строк разное - оно завист
-         * от количества элементов в базе данных
-         */
-        var circle = temp.length / 5;
-        var statisticTable = document.createElement('table');// таблица вывода статистики
-        statisticTable.className = 'statTable';
-        var statisticTr = document.createElement('tr');// строка данной таблицы
-        var ths = []; // пустой массив для объектов элементов th таблицы вывода статистики
-        for (var c = 0; c < 5; c++) { //т.к. строка из 5 ячеек
-          ths[c] = document.createElement('th');// создание ячеек th таблицы
-          statisticTr.appendChild(ths[c]);// добавление их в строку таблицы
-        }
-        ths[0].textContent = 'id';// наполнение ячеек текстовым содержимым
-        ths[1].textContent = 'Номер ТП';
-        ths[2].textContent = 'Номер счетчика';
-        ths[3].textContent = 'Показания';
-        ths[4].textContent = 'Дата';
-        statisticTable.appendChild(statisticTr);// добавление новой строки в таблицу
-        /**
-         * Идея алгоритма такова:
-         * берется массив temp, содержащий значения
-         * из БД - id, номер ТП, номер счетчика, показания, дату,
-         * и на каждой итерации цикла из него вновь и вновь
-         * создается временный массив tempArray при помощи
-         * метода Array.slice, вычленяющего из temp по 5
-         * последующих элементов. Затем создается строка таблицы tr,
-         * внутренний цикл создает ячейки таблицы,
-         * текстовое содержимое которых берется
-         * из этих каждых пяти вычлененных элементов массива.
-         * Далее ячейки добавляются к строке
-         * И наконец во внешнем цикле на каждой
-         * его итерации строки вставляются в таблицу.
-         * По завершении таблицa вставляется в body
-         *
-         */
-        for (var i = 0, arrayEnd = 5, arrayStart = 0; i < circle; i++, arrayEnd += 5, arrayStart += 5) {
-          var tempArray = temp.slice(arrayStart, arrayEnd);// временный динамический массив из 5ти элементов
-          var tr = document.createElement('tr'); // строка таблицы вывода статистики
-          for (var j = 0; j < tempArray.length; j++) {
-            var td = document.createElement('td');// ячейки таблицы
-            td.textContent = tempArray[j];// заполнение ячеек
-            tr.appendChild(td);// вставка ячеек в строку
-          }
-          statisticTable.appendChild(tr);// вставка строки в таблицу
-        }
 
-        $("div.loader2").remove();// удаление картинки-загрузчика
-        body.insertBefore(statisticTable, form);// вставка таблицы статистики в тело документа перед списками выбора
-        var lastTable = $('.statTable').last();// последняя добавленная таблица вывода статистики
-        lastTable.css({display: 'none'});// скрытие таблицы статистики для последующей анимации появления
-        //lastTable.fadeIn(1000);// анимация появления таблицы
-        //lastTable.effect( "bounce", { times: 3 }, 1500 );// анимация подпрыгивания таблицы
-        //lastTable.effect('drop', {direction: 'left', mode: 'show'}, 'slow');// анимация выдвижения таблицы слева
-        lastTable.effect('puff', {mode: 'show'}, 600);//
-        var scrollTop = $('.statTable').last().offset().top;// анимация появления таблицы
-        $('html, body').animate({scrollTop: scrollTop}, 1000, 'swing');// прокрутка таблицы в начало документа
-        body.insertBefore(document.createElement('p'), form);// абзац для визуального отделения таблиц статистики от списков выбора
-        body.insertBefore(document.createElement('p'), statisticTable);// абзац для отделения таблиц друг от друга
-        that.options[0].selected = true;// программная установка 1го элемента списка в активное состояние
-      },
-      error: function (error) {// при неудачном ответе сервера
-        $dialog.dialog('open');//alert(error);
-      }
-    });
-  }
 
   //выбор пункта в списке "Статистика по номеру счетчика"
   statistic_count.addEventListener("change", function () {
@@ -300,6 +191,7 @@ window.addEventListener("load", function () {
     $.ajax({
       data: {selected: $("#select").val(), count: arrayTr[1]},
       success: function (content) {
+        console.log(content);
         var temp = content.split(",");// парсинг строки, полученной из БД из ответа сервера и содержащей id, номер ТП и т.д., в массив
         addTr(temp);// построение из этого массива строки таблицы и добавление ее в таблицу
         $("td:nth-child(6)").html("<div class=crossRemoveButton></div>");// вставка в последнюю ячейку строки кнопки удаления
@@ -383,42 +275,20 @@ window.addEventListener("load", function () {
     }
     this.options[0].selected = true;// программная уствновка 1ого пункта списка в активное состояние
   }, false);
-
-  /**
-   * функция построения строки таблицы
-   * и добавления ее в таблицу
-   * @function addTr
-   * @param {array} arrayTr - массив значений для вставки в ячейки таблицы
-   */
-  function addTr(arrayTr) {
-    var tr = document.createElement("tr"),// строка
-      td = [];// массив для ячеек
-    for (var i = 0; i < 6; i++) {
-      td[i] = document.createElement("td");// ячейка
-      td[i].textContent = arrayTr[i];// заполнение ячеек содержимым
-      tr.appendChild(td[i]);// вставка ячейки в строку
-    }
-    table.appendChild(tr);// добавление строки в таблицу
-    tr.style.display = 'none';// скрытие строки для последующего эффекта анимации
-    var $last_tr = $(tr).last();// только-что добавленная строка
-    $last_tr.fadeIn(1000);// анимация появления строки
-    var scrollTop = $last_tr.offset().top;// координаты только-что добавленной строки
-    $('html, body').animate({scrollTop: scrollTop}, 1000, 'swing');// скроллинг до строки
-  }
-
-  $('body').bind('ajaxStart', function () {
-    $page_loader.css({
-      width: '100px',
-      height: '100px',
-      position: 'fixed',
-      backgroundImage: "url('http://kupislona.esy.es/pokazaniya/res/pageLoader.gif')",
-      left: ($(window).width() / 2 - 50) + 'px',
-      top: ($(window).height() / 2 - 50) + 'px'
-    }).appendTo($('body'));
-  });
+  
+  //$('body').bind('ajaxStart', function () {
+  //  $page_loader.css({
+  //    width: '100px',
+  //    height: '100px',
+  //    position: 'fixed',
+  //    backgroundImage: "url('http://kupislona.esy.es/pokazaniya/res/pageLoader.gif')",
+  //    left: ($(window).width() / 2 - 50) + 'px',
+  //    top: ($(window).height() / 2 - 50) + 'px'
+  //  }).appendTo($('body'));
+  //});
 
   $('body').bind('ajaxStop', function () {
     $page_loader.remove();
   });
 
-}, false);
+});
