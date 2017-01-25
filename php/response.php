@@ -56,36 +56,53 @@ if (!empty($set_value)) {// если передан номер счетчика 
         return round(end($inArray) + $average);// добавить к последним показаниям полученный результат и возвратить его
     }
 
-    $value = average($temp_array);
+    $value = average($temp_array);// просичитанный результат
 
+    //запрос - вставить в таблицу 'pokazaniya' номер ТП, номер счетчика, показания, дату
     $query = "INSERT INTO `pokazaniya` (`tp_number`, `count_number`, `pok`, `date`) VALUES (\"$tp_number\",\"$set_value\",\"$value\",\"$currentDate\")";
+    //отправить запрос в базу
     $db->query($query);
 
+    //запрос - выбрать из базы добавленную выше запись
     $query = "select * from pokazaniya order by id desc limit 1";
+    // отправить запрос в базу и записать в переменную
     $result = $db->query($query);
+    // количество строк-результатов
     $num_results = $result->num_rows;
+    //считать результат в объект
     for ($i = 0; $i < $num_results; $i++) {
         $row = $result->fetch_object();
+        // и вывести строку типа "id, номер ТП, номер счетчика, показания, дата"
+        // которая будет получена функцией ajax.success в её параметре content
+        // в функции setStatisticValues в pokazaniya.js
         echo "$row->id,$row->tp_number,$row->count_number,$row->pok,$row->date,";
-
     }
 }
 
-if (!empty($selected) && !empty($count)) {
+if (!empty($selected) && !empty($count)) {//если передан номер ТП из списка "добавить ТП" и номер счетчика
+    //запрос - вставить в таблицу номер ТП, номер счетчика, дату
     $query = "INSERT INTO `pokazaniya` (`tp_number`, `count_number`, `date`) VALUES (\"$selected\",\"$count\",\"$currentDate\")";
+    // отправить запрос в базу
     $db->query($query);
 
+    //запрос - выбрать вставленную выше строку
     $query = "select * from pokazaniya order by id desc limit 1";
+    //отправить запрос в базу
     $result = $db->query($query);
+    // количество строк-результатов
     $num_results = $result->num_rows;
-    for ($i = 0; $i < $num_results; $i++) {
-        $row = $result->fetch_object();
-        echo "$row->id,$row->tp_number,$row->count_number,,$row->date,";
 
+    for ($i = 0; $i < $num_results; $i++) {
+        $row = $result->fetch_object();//считать результаты в объект
+        //и вывести строку вида "id, номер ТП, номер счетчика, , , дата",
+        //которая будет получена функцией ajax.success в её параметре content
+        // в функции send в pokazaniya.js
+        echo "$row->id,$row->tp_number,$row->count_number,,$row->date,";
     }
 }
 
-if (!empty($id)) {
+if (!empty($id)) {// id строки таблицы, передающийся при нажатии кнопки удаления(последней ячейки таблицы)
+    // запрос - 
     $select_all_query = "select * from `pokazaniya` WHERE `id`=$id";
     $result = $db->query($select_all_query);
     $num_results = $result->num_rows;
