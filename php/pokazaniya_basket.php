@@ -11,6 +11,9 @@
 
         <meta charset="utf-8">
         <style>
+            body{
+										background-image: url('/pokazaniya/res/skin.png');
+            }
             table {
                 border-collapse: collapse;
                 empty-cells: hide;

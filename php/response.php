@@ -8,49 +8,60 @@ $currentDate = date("d.m.y");// динамическая дата в форма�
 $statistic = $_POST["statistic"];// номер ТП из списка "Статистика по номеру ТП"
 $statistic_count = $_POST["statisticCount"];// номер ТП из списка "Статистика по номеру счетчика"
 $set_value = $_POST["set_value"];// номер счетчика из списка "Просчитать и ввести показания"
-$count_value = $_POST["count_value"];// номер счетчика
-$set_v = $_POST['set_v'];// номер ТП из списка "Просчитать и ввести показания"
+$tp_number = $_POST['tp_number'];// номер ТП из списка "Просчитать и ввести показания"
+$idText = $_POST['idText'];// уникальный номер из первой ячейки из файла execute.js
 
-require_once("/home/u996357382/public_html/pokazaniya/connection.php");
+require_once("/home/u996357382/public_html/pokazaniya/connection.php");// подключение к базе
 
-if (!empty($set_value) && !empty($count_value)) {
+if (!empty($set_value)) {// если передан номер счетчика из списка "Просчитать и ввести показания
 
+    // выбрать все поля из столбца "показания" , где номер счетчика равен $set_value и отсортировать по возрастанию
     $query = "select `pok` from `pokazaniya` WHERE `count_number` = \"$set_value\" ORDER BY id ASC";
+    //запрос в базу
     $result = $db->query($query);
+    //количество строк-результатов
     $num_results = $result->num_rows;
+    //временная пустая строка
     $temp_str = '';
 
-    for ($i = 0; $i < $num_results; $i++) {
-        $row = $result->fetch_object();
-        $temp_str.="$row->pok,";
+    for ($i = 0; $i < $num_results; $i++) {// цикл по количеству результатов
+        $row = $result->fetch_object();// запись результата в объект
+        $temp_str .= "$row->pok,";// запись результата в строку
     }
 
-    $temp_str = rtrim($temp_str, ',');
-    $temp_array = explode(',', $temp_str);
+    $temp_str = rtrim($temp_str, ',');// обрезать последний символ строки - запятую
+    $temp_array = explode(',', $temp_str);// распарсить строку в массив
 
+    //*
+    //Вычисляет среднее арифметическое по имеющимся показаниям определенного счетчика
+    //Так как среднее арифметическое есть сумма чисел, деленная на их количество,
+    //то в функции все числа из столбца "показания" одного счетчика считываются в массив,
+    //затем в цикле из последнего элемента массива вычитается предпоследний,
+    //из предпоследнего "пред-предпоследний" и т.д. до начала массива.
+    //результаты вычитания заносятся в новый временный массив $temp_array;
+    //таким образом $temp_array и есть ряд чисел, по которым нужно посчитаь ср. арифм.
+    //$inArray - исходный массив
+    //*/
     function average($inArray)
     {
-        $temp_array = array();
-        $length = count($inArray);
+        $temp_array = array();// временный массив
+        $length = count($inArray);// длинна входного массива
 
         for ($i = $length, $last = $length - 1; $i > 1; $i--) {
-            $j = $inArray[$last] - $inArray[$last - 1];
-            $temp_array[] = $j;
+            $j = $inArray[$last] - $inArray[$last - 1];// вычитание одного элемента массива из др., начиная с конца
+            $temp_array[] = $j;// занесение результата вычитания в массив
             $last--;
         }
-        $average = array_sum($temp_array) / count($temp_array);
-        return round(end($inArray) + $average);
+        $average = array_sum($temp_array) / count($temp_array);// среднее арифметическое по показаниям
+        return round(end($inArray) + $average);// добавить к последним показаниям полученный результат и возвратить его
     }
 
-    //echo average($temp_array);
-    //echo "\n";
-    //echo "$set_v : $count_value";
     $value = average($temp_array);
-    
-	   $query = "INSERT INTO `pokazaniya` (`tp_number`, `count_number`, `pok`, `date`) VALUES (\"$set_v\",\"$count_value\",\"$value\",\"$currentDate\")";
-	   $db->query($query);
-	
-	   $query = "select * from pokazaniya order by id desc limit 1";
+
+    $query = "INSERT INTO `pokazaniya` (`tp_number`, `count_number`, `pok`, `date`) VALUES (\"$tp_number\",\"$set_value\",\"$value\",\"$currentDate\")";
+    $db->query($query);
+
+    $query = "select * from pokazaniya order by id desc limit 1";
     $result = $db->query($query);
     $num_results = $result->num_rows;
     for ($i = 0; $i < $num_results; $i++) {
@@ -87,6 +98,22 @@ if (!empty($id)) {
     }
 
     $query = "DELETE FROM `pokazaniya` WHERE `id`=$id";
+    $db->query($query);
+}
+
+if (!empty($idText)) {
+    $idText_query = "select * from `pokazaniya_basket` WHERE `id`=$idText";
+    $result = $db->query($idText_query);
+    $num_results = $result->num_rows;
+
+    for ($i = 0; $i < $num_results; $i++) {
+        $row = $result->fetch_object();
+        echo "$row->id,$row->tp_number,$row->count_number,$row->pok, $row->date";
+        $insert_value = "insert into `pokazaniya` (`id`, `tp_number`, `count_number`, `pok`, `date`) VALUES (\"$row->id\", \"$row->tp_number\", \"$row->count_number\", \"$row->pok\", \"$row->date\")";
+        $db->query($insert_value);
+    }
+
+    $query = "DELETE FROM `pokazaniya_basket` WHERE `id`=$idText";
     $db->query($query);
 }
 

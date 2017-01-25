@@ -15,7 +15,7 @@ function showStatistic(those, postValue) {
   if (those.selectedIndex == 0) return;// если выбран 1ый элемент списка - возврат из функции
   var that = those,// объект списка
     statisticTp = those.value;// значение выбранного элемента списка
-  loader.insertBefore($form);//полоса-загрузчик
+  loader.insertBefore($form);// вставка полосы-загрузчика перед формой со списками
   $.ajax({
     /**
      *значение выбранного элемента списка post-запросом
@@ -30,7 +30,7 @@ function showStatistic(those, postValue) {
      */
 
     complete: function () {
-      loader.remove();
+      loader.remove(); // удаление полосы-загрузчика
     },
 
     success: function (content) {
@@ -105,7 +105,7 @@ function showStatistic(those, postValue) {
       that.options[0].selected = true;// программная установка 1го элемента списка в активное состояние
     },
     error: function (error) {// при неудачном ответе сервера
-      $dialog.dialog('open');//alert(error);
+      $dialog.dialog('open');// вывод модального окна
     }
   });
 }

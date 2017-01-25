@@ -1,4 +1,3 @@
-
 $(function () {
   var table = document.getElementById("table"), // таблица
     select = document.getElementById("select"),// список выбора "Добавить ТП"
@@ -8,7 +7,7 @@ $(function () {
     statistic_count = document.getElementById("statistic_count"),// список выбора "Статистика по номеру счетчика"
     $menu_button = $('#menu-button');// меню в правом верхнем углу, отвечающее за показ-скрытие формы со списками
   $dialog = $('#dialog');// диалоговое окно - выводится при неудачном ajax-запросе в функции error. Это стандартный компонент jQuery UI - dialog
-  $page_loader = $("<div id = 'page_loader'></div>");
+  $page_loader = $("<div id = 'page_loader'></div>");// анимация-загрузчик страницы
   $table = $('#table');// таблица;
   lastTd = $("td:nth-child(6)");// 6-ой столбец таблицы - кнопка удаления
   body = document.body;// тело оно и в Африке тело
@@ -17,9 +16,9 @@ $(function () {
   form = document.getElementById("accordion");// форма со списками
 
   dialog();
-  ajaxSetup();
+  ajaxSetup("pageLoader.gif");
 
-  $menu_button.bind({
+  $menu_button.bind({ // показать-скрыть форму со списками
     click: function () {
       $form.toggle();
     },
@@ -87,9 +86,9 @@ $(function () {
     $(this).css({backgroundColor: 'red'});// красный фон
   }).live("touchend", function () {// палец поднят
     $(this).css({background: ''});// изначальный фон
-  });//.live("mouseover", function () { // мышь над ячейкой
-//    $(this).css({cursor: 'pointer', outline: '3px solid red'});// красная рамка в 3px + cursor pointer
-//  }).live('mouseout', function () {
+  }).live("mouseover", function () { // мышь над ячейкой
+    $(this).css({cursor: 'pointer'/*, outline: '3px solid red'*/});// красная рамка в 3px + cursor pointer
+  });// .live('mouseout', function () {
 //    $(this).css({outline: 'none'});// none
 //  });
 
@@ -107,7 +106,7 @@ $(function () {
   lastTd.live("click", function () {
     var id = this.parentNode.firstElementChild.textContent;// номер из 1ой ячейки
     var parent = this.parentNode; // строка-родитель(tr)
-    var $parent = $(this.parentNode);
+    var $parent = $(this.parentNode); // строка-родитель(tr)
     var really = confirm("Действительно удалить строку с id = " + id + "?");// диалоговое окно с запросом на подтверждение
     if (really) {// если нажата кнопка "да"
       $.ajax({//аякс в response.php
@@ -123,7 +122,7 @@ $(function () {
            });*/
         },
         error: function (xhr, str, errorType) {// при ошибке
-          $dialog.dialog('open');//вывод диалогового окна
+          $dialog.dialog('open');//вывод модального окна
         }
       });
     }
@@ -165,8 +164,6 @@ $(function () {
   }, false);
 
 
-
-
   //выбор пункта в списке "Статистика по номеру счетчика"
   statistic_count.addEventListener("change", function () {
     showStatistic(this, "statisticCount");
@@ -191,25 +188,24 @@ $(function () {
     $.ajax({
       data: {selected: $("#select").val(), count: arrayTr[1]},
       success: function (content) {
-        console.log(content);
         var temp = content.split(",");// парсинг строки, полученной из БД из ответа сервера и содержащей id, номер ТП и т.д., в массив
         addTr(temp);// построение из этого массива строки таблицы и добавление ее в таблицу
         $("td:nth-child(6)").html("<div class=crossRemoveButton></div>");// вставка в последнюю ячейку строки кнопки удаления
       },
       error: function (xhr, str, errorType) {
-        $dialog.dialog('open');//alert(errorType);
+        $dialog.dialog('open');// вывод модального окна
       }
     });
   }
 
   /**
-   * отправляет в response.php POST['set_value'] - номер счетчика, POST['count_value'] - номер счетчика, POST['set_v'] - номер ТП
+   * отправляет в response.php POST['set_value'] - номер счетчика, POST['tp_number'] - номер ТП
    * и формирует строку таблицы из ответа
    * @param count_value
    */
   function setStatisticValues(count_value) {
     $.ajax({
-      data: {set_value: $('#set_values').val(), count_value: count_value[1], set_v: count_value[0]},
+      data: {set_value: $('#set_values').val(), tp_number: count_value},
       success: function (content) {
         var temp = content.split(",");// парсинг строки, полученной из БД из ответа сервера и содержащей id, номер ТП и т.д., в массив
         addTr(temp);// построение из этого массива строки таблицы и добавление ее в таблицу
@@ -222,60 +218,60 @@ $(function () {
    * выбор в списке "Просчитать и внести показания"
    */
   set_values.addEventListener('change', function () {
-    var checked = this.selectedIndex;
+    var checked = this.selectedIndex; // номер выбранного элемента списка
     switch (checked) {
 
       case 1:
-        setStatisticValues([309, 100964]);
+        setStatisticValues(309);
         break;
 
       case 2:
-        setStatisticValues([309, 160000]);
+        setStatisticValues(309);
         break;
 
       case 3:
-        setStatisticValues([310, 215110]);
+        setStatisticValues(310);
         break;
 
       case 4:
-        setStatisticValues([310, 995258]);
+        setStatisticValues(310);
         break;
 
       case 5:
-        setStatisticValues([310, '019250']);
+        setStatisticValues(310);
         break;
 
       case 6:
-        setStatisticValues([310, 114489]);
+        setStatisticValues(310);
         break;
 
       case 7:
-        setStatisticValues([311, 215933]);
+        setStatisticValues(311);
         break;
 
       case 8:
-        setStatisticValues([311, 516465]);
+        setStatisticValues(311);
         break;
 
       case 9:
-        setStatisticValues([312, 820943]);
+        setStatisticValues(312);
         break;
 
       case 10:
-        setStatisticValues([312, 835057]);
+        setStatisticValues(312);
         break;
 
       case 11:
-        setStatisticValues([313, 20297549]);
+        setStatisticValues(313);
         break;
 
       case 12:
-        setStatisticValues([314, 20309187]);
+        setStatisticValues(314);
         break;
     }
     this.options[0].selected = true;// программная уствновка 1ого пункта списка в активное состояние
   }, false);
-  
+
   //$('body').bind('ajaxStart', function () {
   //  $page_loader.css({
   //    width: '100px',
@@ -288,7 +284,7 @@ $(function () {
   //});
 
   $('body').bind('ajaxStop', function () {
-    $page_loader.remove();
+    $page_loader.remove(); // удаление анимации-загрузчика со страницы
   });
 
 });
