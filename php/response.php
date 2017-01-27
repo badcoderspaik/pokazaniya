@@ -102,40 +102,60 @@ if (!empty($selected) && !empty($count)) {//если передан номер �
 }
 
 if (!empty($id)) {// id строки таблицы, передающийся при нажатии кнопки удаления(последней ячейки таблицы)
-    // запрос - 
+    // запрос - выбрать все записи из таблицы, где id = $id
     $select_all_query = "select * from `pokazaniya` WHERE `id`=$id";
+    // отправить запрос в базу и записать результат в переменную result
     $result = $db->query($select_all_query);
+    // количество строк-результатов
     $num_results = $result->num_rows;
 
-    for ($i = 0; $i < $num_results; $i++) {
+    for ($i = 0; $i < $num_results; $i++) {// цикл по результатам
+    	// считать результаты в объект
         $row = $result->fetch_object();
+        // вывести строку вида "id, номер ТП, номер счетчика, показания, дата"
         echo "$row->id,$row->tp_number,$row->count_number,$row->pok, $row->date";
+        // запрос - вставить в таблицу 'pokazaniya_basket' значения в поля id, tp_number, count_number, pok и date
+        // При нажатии на кнопку удаления в таблице из файла pokazaniya.php запись удаляется
+        // из таблицы pokazaniya и записывается в таблицу pokazaniya_basket, выполняющей роль корзины
         $insert_value = "insert into `pokazaniya_basket` (`id`, `tp_number`, `count_number`, `pok`, `date`) VALUES (\"$row->id\", \"$row->tp_number\", \"$row->count_number\", \"$row->pok\", \"$row->date\")";
+        // выполнить запрос
         $db->query($insert_value);
     }
-
+	// после вставки записи в pokazaniya_basket удалить ее из pokazaniya
     $query = "DELETE FROM `pokazaniya` WHERE `id`=$id";
+    //выполнить запрос
     $db->query($query);
 }
 
-if (!empty($idText)) {
+if (!empty($idText)) { //если передан idText
+	//запрос - выбрать все записи из таблицы pokazanya_basket, где id = idText
     $idText_query = "select * from `pokazaniya_basket` WHERE `id`=$idText";
+    //запостить результат в базу и записать в переменную result
     $result = $db->query($idText_query);
+    // количество строк-результаов
     $num_results = $result->num_rows;
 
-    for ($i = 0; $i < $num_results; $i++) {
+    for ($i = 0; $i < $num_results; $i++) {// цикл по результатам
+    	//записать результат в объект
         $row = $result->fetch_object();
+        //вывести строку вида "id, номер ТП, номер счетчика, показания, дата"
         echo "$row->id,$row->tp_number,$row->count_number,$row->pok, $row->date";
+        //запрос вставляет запись в таблицу pokazaniya и удаляет ее из таблицы pokazaniya_basket
+        //это процесс восстановления записи из корзины
         $insert_value = "insert into `pokazaniya` (`id`, `tp_number`, `count_number`, `pok`, `date`) VALUES (\"$row->id\", \"$row->tp_number\", \"$row->count_number\", \"$row->pok\", \"$row->date\")";
+        //выполнить запрос
         $db->query($insert_value);
     }
-
+	//запрос - удалить запись с переданным id
     $query = "DELETE FROM `pokazaniya_basket` WHERE `id`=$idText";
+    //выполнить
     $db->query($query);
 }
 
-if (!empty($insertValue)) {
+if (!empty($insertValue)) {//если передан параметр
+	//запрос - обновить показания в записи в поле pok, где id = $firstId
     $query = "UPDATE `pokazaniya` set `pok` = \"$insertValue\" WHERE `id`=$firstId";
+    
     $db->query($query);
     echo "$insertValue";
 }
