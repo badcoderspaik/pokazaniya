@@ -71,6 +71,7 @@
     }
     echo "</table>";
     ?>
-
+	<br>
+	<button id="btnCleanBasket">Очистить корзину</button>
     </body>
     </html>

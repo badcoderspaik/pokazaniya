@@ -10,8 +10,15 @@ $statistic_count = $_POST["statisticCount"];// номер счетчика из 
 $set_value = $_POST["set_value"];// номер счетчика из списка "Просчитать и ввести показания"
 $tp_number = $_POST['tp_number'];// номер ТП из списка "Просчитать и ввести показания"
 $idText = $_POST['idText'];// уникальный номер из первой ячейки из файла execute.js
+$cleanBasket = $_POST['cleanBasket'];
 
 require_once("/home/u996357382/public_html/pokazaniya/connection.php");// подключение к базе
+
+if(!empty($cleanBasket)){
+	$query = "delete FROM `pokazaniya_basket`";
+	$db->query($query);
+	echo 'do it';
+}
 
 if (!empty($set_value)) {// если передан номер счетчика из списка "Просчитать и ввести показания
 

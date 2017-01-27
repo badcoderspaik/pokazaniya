@@ -37,6 +37,23 @@ function execute() {
     }
 
   });
+  
+  $btnCleanBasket.bind('click', function(){
+  	
+  	var really = confirm('Очистить корзину?');
+  	if(really){
+		$.ajax({
+			data:{cleanBasket: true},
+			success: function(content){
+				if(content == 'do it'){
+					$('#table tr:not(:first)').remove();
+				}
+			},
+
+		});
+	}
+  	
+  });
 }
 
   
