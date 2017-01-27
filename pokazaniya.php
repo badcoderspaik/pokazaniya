@@ -108,20 +108,25 @@
 
 <?php
 
-require_once("connection.php");
-
+require_once("connection.php");// коннект к базе
+// запрос - выбрать все записи из таблицы pokazaniya и отсортировать по возрастанию
 $query = "select * from pokazaniya ORDER BY id ASC";
+//запостить запрос в базу и записать его в переменную result
 $result = $db->query($query);
+//количество строк-результатов
 $num_results = $result->num_rows;
 
+//абзац с текущей датой
 echo "<p id = date>Сегодня " . date("d.m.y") . "</p>"; ?>
+<!--кнопка меню в правом верхнем углу страницы, скрывающая-отображающая блок списков-->
 <div id="menu-button">
     <div class="m-button"></div>
     <div class="m-button"></div>
     <div class="m-button"></div>
 </div>
+<!--абзац-разделитель-->
 <p></p>
-<?
+<?//вывод html таблицы
 echo "<table id = 'table'>";
 echo "<tr>";
 echo "<th>id</th>";
@@ -206,7 +211,7 @@ echo "</table>";
         <option>20309187</option>
     </select>
 </form>
-
+<!--блок для диалогового окна (плагин jqueryUI dialog)-->
 <div id="dialog">
     <p>
         Слабое сетевое соединение Попытка не пытка, дружок!

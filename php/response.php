@@ -6,7 +6,7 @@ $insertValue = $_POST["insertValue"];// значение, введенное в 
 $firstId = $_POST["firstId"];// уникальный id записи; служит для идентификации записи, в которую будет вставлено значение из $_POST["insertValue"]
 $currentDate = date("d.m.y");// динамическая дата в формате дд.мм.гг
 $statistic = $_POST["statistic"];// номер ТП из списка "Статистика по номеру ТП"
-$statistic_count = $_POST["statisticCount"];// номер ТП из списка "Статистика по номеру счетчика"
+$statistic_count = $_POST["statisticCount"];// номер счетчика из списка "Статистика по номеру счетчика"
 $set_value = $_POST["set_value"];// номер счетчика из списка "Просчитать и ввести показания"
 $tp_number = $_POST['tp_number'];// номер ТП из списка "Просчитать и ввести показания"
 $idText = $_POST['idText'];// уникальный номер из первой ячейки из файла execute.js
@@ -155,28 +155,41 @@ if (!empty($idText)) { //если передан idText
 if (!empty($insertValue)) {//если передан параметр
 	//запрос - обновить показания в записи в поле pok, где id = $firstId
     $query = "UPDATE `pokazaniya` set `pok` = \"$insertValue\" WHERE `id`=$firstId";
-    
+    //выполнить
     $db->query($query);
+    //вывести строку из insertValue
     echo "$insertValue";
 }
 
-if (!empty($statistic)) {
+if (!empty($statistic)) {//если передан параметр
+	//запрос - выбрать все записи, где номер ТП равен $statistic и отсортировать по возрастанию
     $query = "select * from `pokazaniya` WHERE `tp_number` = \"$statistic\" ORDER BY id ASC";
+    //записать результат в объект и выполнить запрос
     $result = $db->query($query);
+    //количество строк-результатов
     $num_results = $result->num_rows;
+    //цикл по резльтатам
     for ($i = 0; $i < $num_results; $i++) {
+    	//записать результат в объект
         $row = $result->fetch_object();
+        //вывести строку вида "id, номер ТП, номер счетчика, показания, дата"
         echo "$row->id,$row->tp_number,$row->count_number,$row->pok,$row->date,";
 
     }
 }
 
-if (!empty($statistic_count)) {
+if (!empty($statistic_count)) {//если передан параметр
+	//запрос - выбрать все записи, где номер счетчика равен $statistic_count и отсортировать по возрастанию
     $query = "select * from `pokazaniya` WHERE `count_number` = \"$statistic_count\" ORDER BY id ASC";
+	//записать запрос в объект и отправить в базу
     $result = $db->query($query);
+    //количество строк-результатов
     $num_results = $result->num_rows;
+    //цикл по результатам
     for ($i = 0; $i < $num_results; $i++) {
+    	//записать результаты в объект
         $row = $result->fetch_object();
+        //вывести строку вида "id, номер ТП, номер счетчика, показания, дата"
         echo "$row->id,$row->tp_number,$row->count_number,$row->pok,$row->date,";
 
     }
