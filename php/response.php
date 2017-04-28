@@ -176,9 +176,9 @@ if (!empty($idText)) { //если передан idText
         //$db->query($insert_value);
     //}
 	//запрос - удалить запись с переданным id
-    $query = "DELETE FROM `pokazaniya_basket` WHERE `id`=$idText";
+    //$query = "DELETE FROM `pokazaniya_basket` WHERE `id`=$idText";
     //выполнить
-    $db->query($query);
+    //$db->query($query);
 }
 
 if (!empty($insertValue)) {//если передан параметр
