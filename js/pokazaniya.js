@@ -1,9 +1,9 @@
 $(function () {
-  var table = document.getElementById("table"), // таблица
+  var table = new AppPokazaniya.View.Table(document.getElementById("table")),
     select = document.getElementById("select"),// список выбора "Добавить ТП"
     statistic = document.getElementById("statistic"),// список выбора "Статистика по номеру ТП"
     set_values = document.getElementById('set_values'), // список выбора "Просчитать и внести показания"
-    valuesTd = $("td:nth-child(4)"),// 4-ый столбец "показания"
+  //valuesTd = $("td:nth-child(4)"),// 4-ый столбец "показания"
     statistic_count = document.getElementById("statistic_count"),// список выбора "Статистика по номеру счетчика"
     $menu_button = $('#menu-button');// меню в правом верхнем углу, отвечающее за показ-скрытие формы со списками
   $dialog = $('#dialog');// диалоговое окно - выводится при неудачном ajax-запросе в функции error. Это стандартный компонент jQuery UI - dialog
@@ -56,39 +56,42 @@ $(function () {
    * возвращаются обратно,
    * и вставляются в ячейку "показания"
    */
-  valuesTd.live("click", function () {
-    var id = this.parentNode.firstElementChild.textContent,// текстовое содержимое первого столбца таблицы (id) - далее как значение POST-параметра передается на сервер в файл response.php
-      that = $(this), // псевдоним this
-      insertValue = prompt("Ввести показания", that.text()); // окно ввода показаний с ранее введенным значением по умолчанию
-    if (insertValue == null || insertValue == "") return; // если нажать кнопку "отмена" или ввести пустое значение - произойдет выход из функции
-    var scrollTop = that.offset().top;// анимация появления таблицы
-    $('html, body').animate({scrollTop: scrollTop}, 1000, 'swing');// прокрутка таблицы в начало документа
-    that.html("<div class = loader></div>"); // иначе в ячейку будет вставлен div с фоном картинки-загрузчика
-
-    // и аяксом отправятся следующие данные на сервер в файл response.php:
-    $.ajax({
-      data: {insertValue: insertValue, firstId: id}, // POST['insertValue'] со значением, введенным в prompt-окно, и POST['firstid'] с текстовым содержимым(уникальным id) первого столбца
-      success: function (content) { // при успешном запросе
-        if (content) { // если ответ не пустой
-          that.html(content); // в ячейку "показания" вставляется ответ сервера(показания счетчика), затирая div с анимацией загрузчика
-        }
-      },
-      error: function (xhr, str, errorType) {// при неуспешном запросе
-        $dialog.dialog('open');// выводится диалоговое окно
-      }
-    });
+  table.value_field.element.live("click", function (event) {
+    table.value_field.addValue(event.target);
+//    var id = this.parentNode.firstElementChild.textContent,// текстовое содержимое первого столбца таблицы (id) - далее как значение POST-параметра передается на сервер в файл response.php
+//      that = $(this), // псевдоним this
+//      insertValue = prompt("Ввести показания", that.text()); // окно ввода показаний с ранее введенным значением по умолчанию
+//    if (insertValue == null || insertValue == "") return; // если нажать кнопку "отмена" или ввести пустое значение - произойдет выход из функции
+//    var scrollTop = that.offset().top;// анимация появления таблицы
+//    $('html, body').animate({scrollTop: scrollTop}, 1000, 'swing');// прокрутка таблицы в начало документа
+//    that.html("<div class = loader></div>"); // иначе в ячейку будет вставлен div с фоном картинки-загрузчика
+//
+//    // и аяксом отправятся следующие данные на сервер в файл response.php:
+//    $.ajax({
+//      data: {insertValue: insertValue, firstId: id}, // POST['insertValue'] со значением, введенным в prompt-окно, и POST['firstid'] с текстовым содержимым(уникальным id) первого столбца
+//      success: function (content) { // при успешном запросе
+//        if (content) { // если ответ не пустой
+//          that.html(content); // в ячейку "показания" вставляется ответ сервера(показания счетчика), затирая div с анимацией загрузчика
+//        }
+//      },
+//      error: function (xhr, str, errorType) {// при неуспешном запросе
+//        $dialog.dialog('open');// выводится диалоговое окно
+//      }
+//    });
   });
 
   /**
    * клик на ячейке "показания"(4й столбец)
    */
-  valuesTd.live("touchstart", function () {// палец опущен
-    $(this).css({backgroundColor: 'red'});// красный фон
-  }).live("touchend", function () {// палец поднят
-    $(this).css({background: ''});// изначальный фон
-  }).live("mouseover", function () { // мышь над ячейкой
-    $(this).css({cursor: 'pointer'/*, outline: '3px solid red'*/});// красная рамка в 3px + cursor pointer
-  });// .live('mouseout', function () {
+  table.value_field.element.live("touchstart", function (event) {// палец опущен
+    table.value_field.setNewStyle(event.target);
+  })
+    .live("touchend", function (event) {// палец поднят
+      table.value_field.setDefaultStyle(event.target);
+    })
+    .live("mouseover", function () { // мышь над ячейкой
+      $(this).css({cursor: 'pointer'/*, outline: '3px solid red'*/});// красная рамка в 3px + cursor pointer
+    });// .live('mouseout', function () {
 //    $(this).css({outline: 'none'});// none
 //  });
 
@@ -103,29 +106,30 @@ $(function () {
    * и, если эта операция проходит удачно,
    * происходит удаление строки из html-таблицы
    */
-  lastTd.live("click", function () {
-    var id = this.parentNode.firstElementChild.textContent;// номер из 1ой ячейки
-    var parent = this.parentNode; // строка-родитель(tr)
-    var $parent = $(this.parentNode); // строка-родитель(tr)
-    var really = confirm("Действительно удалить строку с id = " + id + "?");// диалоговое окно с запросом на подтверждение
-    if (really) {// если нажата кнопка "да"
-      $.ajax({//аякс в response.php
-        data: {id: id},// передача POST["id"] - это уникальный номер из первой ячейки
-        success: function (content) { // при удачном ответе
-          //parent.parentNode.removeChild(parent);// происходит удаление строки с переданным id
-          $parent.effect('explode', {mode: 'hide'}, 600, function () {
-            parent.parentNode.removeChild(parent);// происходит удаление строки с переданным id
-          });
-
-          /*$parent.effect('bounce', 1000, function(){
-           parent.parentNode.removeChild(parent);// происходит удаление строки с переданным id
-           });*/
-        },
-        error: function (xhr, str, errorType) {// при ошибке
-          $dialog.dialog('open');//вывод модального окна
-        }
-      });
-    }
+  table.button_remove.element.live("click", function (event) {
+    table.removeString(event.currentTarget);
+    //var id = this.parentNode.firstElementChild.textContent;// номер из 1ой ячейки
+    //var parent = this.parentNode; // строка-родитель(tr)
+    //var $parent = $(this.parentNode); // строка-родитель(tr)
+    //var really = confirm("Действительно удалить строку с id = " + id + "?");// диалоговое окно с запросом на подтверждение
+    //if (really) {// если нажата кнопка "да"
+    //  $.ajax({//аякс в response.php
+    //    data: {id: id},// передача POST["id"] - это уникальный номер из первой ячейки
+    //    success: function (content) { // при удачном ответе
+    //      //parent.parentNode.removeChild(parent);// происходит удаление строки с переданным id
+    //      $parent.effect('explode', {mode: 'hide'}, 600, function () {
+    //        parent.parentNode.removeChild(parent);// происходит удаление строки с переданным id
+    //      });
+    //
+    //      /*$parent.effect('bounce', 1000, function(){
+    //       parent.parentNode.removeChild(parent);// происходит удаление строки с переданным id
+    //       });*/
+    //    },
+    //    error: function (xhr, str, errorType) {// при ошибке
+    //      $dialog.dialog('open');//вывод модального окна
+    //    }
+    //  });
+    //}
   });
 
   /**
@@ -189,7 +193,8 @@ $(function () {
       data: {selected: $("#select").val(), count: arrayTr[1]},
       success: function (content) {
         var temp = content.split(",");// парсинг строки, полученной из БД из ответа сервера и содержащей id, номер ТП и т.д., в массив
-        addTr(temp);// построение из этого массива строки таблицы и добавление ее в таблицу
+        //addTr(temp);// построение из этого массива строки таблицы и добавление ее в таблицу
+        table.addString(temp);
         $("td:nth-child(6)").html("<div class=crossRemoveButton></div>");// вставка в последнюю ячейку строки кнопки удаления
       },
       error: function (xhr, str, errorType) {

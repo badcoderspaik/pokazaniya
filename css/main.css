@@ -1,0 +1,67 @@
+body {
+		font-weight: bold;
+		background-image: url("/pokazaniya/res/skin.png");
+		background-attachment: fixed;
+		position: relative;
+		/*margin-bottom: 200px;*/
+}
+
+table {
+		border-collapse: collapse;
+		empty-cells: hide;
+		color: #8b4513;
+}
+
+td, th {
+		border: 2px groove #8b4513;
+		padding: 5px;
+}
+
+th {
+		color: blue;
+}
+
+td:nth-child(6) {
+		position: relative;
+}
+
+.crossRemoveButton {
+		width: 20px;
+		height: 20px;
+		background: url("/pokazaniya/res/cross.png") no-repeat;
+}
+
+.loader {
+		width: 20px;
+		height: 20px;
+		background: url("/pokazaniya/res/loader.gif") no-repeat;
+}
+
+.loader2 {
+		background: url("/pokazaniya/res/47.gif") no-repeat;
+		width: 200px;
+		height: 30px;
+}
+
+p#date {
+		font-size: 1.5em;
+		padding: 15px;
+		border: 1px solid #3c763d;
+		border-radius: 4px;
+		color: #3c763d;
+		background-color: #dff0d8;
+}
+
+select {
+		font-size: 1.5em;
+}
+
+form {
+		position: fixed;
+		bottom: 20px;
+		right: 20px;
+		background-color: #d4e1e1;
+		padding: 20px;
+		display: block;
+		box-shadow: 0 0 20px;
+}

@@ -1,12 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Показания</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/360px.css" media="(max-width: 360px)">
+    <link rel="stylesheet" href="css/361_800.css" media="(min-width: 361px) and (max-width: 800px)">
+    <link rel="stylesheet" href="css/800px.css" media="(max-width: 800px)">
+    <link rel="stylesheet" href="css/960px.css" media="(min-width: 960px)">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script
         src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
         integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
         crossorigin="anonymous">
     </script>
+    <script src='/pokazaniya/js/App/AppPokazaniya.js'></script>
+    <script src='/pokazaniya/js/App/View/Tabl.js'></script>
     <script src="/pokazaniya/js/init.js"></script>
     <script src="js/pokazaniya.js"></script>
     <script src="/pokazaniya/js/ajaxSetup.js"></script>
@@ -16,91 +26,52 @@
     <link rel="stylesheet" href="css/jquery-ui.min.css">
 
     <style>
-        body {
-            font-size: 0.8em;
-            font-weight: bold;
-            background-image: url("res/skin.png");
-            background-attachment: fixed;
-            position: relative;
-            margin-bottom: 200px;
-        }
 
-        table {
-            border-collapse: collapse;
-            empty-cells: hide;
-            color: #8b4513;
-        }
+        /*под мобилу*/
 
-        td, th {
-            border: 2px groove #8b4513;
-            padding: 5px;
-        }
+        /* @media (max-width: 360px) {
+             body {
+                 font-size: 0.8em;
+             }
 
-        th {
-            color: blue;
-        }
+             #menu-button {
+                 position: fixed;
+                 top: 0;
+                 right: 0;
+                 width: 50px;
+                 height: 50px;
+                 background-color: white;
+                 opacity: 0.2;
+                 cursor: pointer;
+                 padding: 10px;
+                 border: 1px solid black;
+                 border-radius: 5px;
+                 z-index: 100;
+             }
 
-        td:nth-child(6) {
-            position: relative;
-        }
+             .m-button {
+                 background-color: black;
+                 height: 10px;
+                 margin-bottom: 10px;
+             }
 
-        .crossRemoveButton {
-            width: 20px;
-            height: 20px;
-            background: url("res/cross.png") no-repeat;
-        }
+             form {
+                 left: 0;
+                 background-color: inherit;
+                 padding: 0;
+             }
+         }*/
 
-        .loader {
-            width: 20px;
-            height: 20px;
-            background: url("res/loader.gif") no-repeat;
-        }
+        /* @media (min-width: 600px) and (max-width: 800px) {
+             body {
+                 font-size: 1.2em;
+             }
 
-        .loader2 {
-            background: url("res/47.gif") no-repeat;
-            width: 200px;
-            height: 30px;
-        }
-
-        p#date {
-            font-size: 1.5em;
-            padding: 15px;
-            border: 1px solid #3c763d;
-            border-radius: 4px;
-            color: #3c763d;
-            background-color: #dff0d8;
-        }
-
-        select {
-            font-size: 1.5em;
-        }
-
-        form {
-            position: fixed;
-            bottom: 0;
-        }
-
-        #menu-button {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 50px;
-            height: 50px;
-            background-color: white;
-            opacity: 0.2;
-            cursor: pointer;
-            padding: 10px;
-            border: 1px solid black;
-            border-radius: 5px;
-            z-index: 100;
-        }
-
-        .m-button {
-            background-color: black;
-            height: 10px;
-            margin-bottom: 10px;
-        }
-
+             select {
+                 font-size: 1em;
+             }
+         }
+ */
     </style>
     <meta charset="utf-8"/>
 </head>
@@ -109,13 +80,16 @@
 <?php
 
 require_once("connection.php");// коннект к базе
-// запрос - выбрать все записи из таблицы pokazaniya и отсортировать по возрастанию
-$query = "select * from pokazaniya ORDER BY id ASC";
-//запостить запрос в базу и записать его в переменную result
-$result = $db->query($query);
-//количество строк-результатов
-$num_results = $result->num_rows;
+require_once("php/Table.php");
 
+// запрос - выбрать все записи из таблицы pokazaniya и отсортировать по возрастанию
+//$query = "select * from pokazaniya ORDER BY id ASC";
+$res = $connector->select("select * from pokazaniya ORDER BY id ASC", false);
+//запостить запрос в базу и записать его в переменную result
+//$result = $db->query($query);
+//количество строк-результатов
+$num_results = $res->num_rows;
+$table = new Table($res, array('id', 'Номер ТП', 'Номер счетчика', 'Покзания', 'Дата'), true);
 //абзац с текущей датой
 echo "<p id = date>Сегодня " . date("d.m.y") . "</p>"; ?>
 <!--кнопка меню в правом верхнем углу страницы, скрывающая-отображающая блок списков-->
@@ -126,8 +100,9 @@ echo "<p id = date>Сегодня " . date("d.m.y") . "</p>"; ?>
 </div>
 <!--абзац-разделитель-->
 <p></p>
-<?//вывод html таблицы
-echo "<table id = 'table'>";
+<? //вывод html таблицы
+$table->show();
+/*echo "<table id = 'table'>";
 echo "<tr>";
 echo "<th>id</th>";
 echo "<th>Номер ТП</th>";
@@ -146,7 +121,7 @@ for ($i = 0; $i < $num_results; $i++) {
     echo "<td><div class = 'crossRemoveButton'></div></td>";
     echo "</tr>";
 }
-echo "</table>";
+echo "</table>";*/
 
 ?>
 <br>
@@ -178,7 +153,7 @@ echo "</table>";
     <p></p>
 
     <select id="statistic_count" name="statistic_count">
-        <option>Статистика по номеру счетчика</option>
+        <option>Статистика по счетчику</option>
         <option>100964</option>
         <option>160000</option>
         <option>215110</option>
@@ -196,7 +171,7 @@ echo "</table>";
     <p></p>
 
     <select id="set_values">
-        <option>Просчитать и внести показания</option>
+        <option>Просчитать показания</option>
         <option>100964</option>
         <option>160000</option>
         <option>215110</option>

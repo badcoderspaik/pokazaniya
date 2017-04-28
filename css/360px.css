@@ -1,0 +1,15 @@
+body{
+		font-size: 0.8em;
+}
+
+form {
+		left: 5px;
+		bottom: 5px;
+		background-color: rgba(127, 127, 127, 0.8);
+		padding: 10px;
+		border-radius: 20px;
+}
+
+select{
+	 font-size: 1.5em;
+}
