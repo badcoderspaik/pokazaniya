@@ -170,7 +170,7 @@ echo "</table>";*/
 
     <p></p>
 
-    <select id="set_values">
+    <!--<select id="set_values">
         <option>Просчитать показания</option>
         <option>100964</option>
         <option>160000</option>
@@ -184,7 +184,7 @@ echo "</table>";*/
         <option>835057</option>
         <option>20297549</option>
         <option>20309187</option>
-    </select>
+    </select>-->
 </form>
 <!--блок для диалогового окна (плагин jqueryUI dialog)-->
 <div id="dialog">

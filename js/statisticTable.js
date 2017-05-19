@@ -31,6 +31,7 @@ function showStatistic(those, postValue) {
 
     complete: function () {
       loader.remove(); // удаление полосы-загрузчика
+      $page_loader.remove();
     },
 
     success: function (content) {
